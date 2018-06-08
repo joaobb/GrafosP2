@@ -7,6 +7,7 @@ import org.jgrapht.io.VertexProvider;
 import org.jgrapht.alg.cycle.HierholzerEulerianCycle;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
 
 /** Importa Grafo Simples no formato GML, verifica se este possui um caminho euleriano,
  * se possuir, retornara a representaçao textual deste caminho.
@@ -16,7 +17,6 @@ import java.util.Arrays;
  * @author João Pedro
  */
 public class Questao2 {
-	
 
 	public static void main(String[] args) {
 		VertexProvider<Object> vp1 =
@@ -31,17 +31,17 @@ public class Questao2 {
 
 		try {
 			//Insira o caminho para o arquivo gml a ser importado
-			gmlImporter.importGraph(graphgml, ImportGraph.readFile("/home/joaopbb/eclipse-workspace/AgrVai/rede.gml"));
+			gmlImporter.importGraph(graphgml, ImportGraph.readFile("/home/joaop/TeoriaGraf/rede.gml"));
 		} catch (ImportException e) {
 			throw new RuntimeException(e);
 		}
 
 		System.out.println(caminho(graphgml));
-
 	}
+
 	/**
-	 * Verifica se este possui um caminho euleriano,
-	 * se possuir, retornara a representaçao textual deste caminho.
+	 * Verifica se este possui um caminho euleriano, se possuir, retornara a representaçao textual deste caminho.
+	 * Possibilita ao usuário a escolha da máquina gerente.
 	 * @param graphgml - grafo a ser verificado
 	 * @return String represetação textual do caminho, se não poussir retorna uma mensagem
 	 */
@@ -50,14 +50,17 @@ public class Questao2 {
 
 		if (graph.isEulerian(graphgml)) {
 
-			//Conversao do caminho gerado para array e posteriormente para ArrayList, possibilitando modificaçao.
+			Scanner inp = new Scanner(System.in);
+			System.out.print("Denominação da máquina gerente: ");
+			String gerente = inp.nextLine().toLowerCase();
+
+			//Conversão do caminho gerado para array e posteriormente para ArrayList, possibilitando modificação.
 			Object[] path = graph.getEulerianCycle(graphgml).getVertexList().toArray();
 			ArrayList<Object> list = new ArrayList<>(Arrays.asList(path));
 
 			//Adiciona o passo no final e remove do inicio.
 			for (int i = 1; i < list.size(); i++) {
-
-				if (!path[i].toString().equals("C")) {
+				if (!path[i].toString().toLowerCase().equals(gerente)) {
 					list.add(path[i]);
 					list.remove(path[i]);
 				} else break;
@@ -71,11 +74,10 @@ public class Questao2 {
 				saida.append(aList.toString()).append(" >> ");
 			}
 
-			return "Rota:" + System.lineSeparator() + saida;
+			return System.lineSeparator() + "Rota:" + System.lineSeparator() + saida;
 
 		} else return "Não é possível encontrar uma rota neste grafo";
 	}
-
 }
 
 
